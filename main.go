@@ -139,7 +139,9 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	loadFromFile()
+	if err := loadFromFile(); err != nil {
+		log.Fatalf("failed to load todos: %v", err)
+	}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/todos", todosHandler)
