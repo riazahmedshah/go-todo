@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 
@@ -27,6 +29,27 @@ var (
 	mu    sync.Mutex
 )
 
+func saveToFile() error {
+	data, err := json.MarshalIndent(todos, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile("todos.json", data, 0644)
+}
+
+func loadFromFile() error {
+	data, err := os.ReadFile("todos.json")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+
+	return json.Unmarshal(data, &todos)
+
+}
+
 func todosHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -47,6 +70,7 @@ func todosHandler(w http.ResponseWriter, r *http.Request) {
 		t.ID = uuid.NewString()
 		mu.Lock()
 		todos[t.ID] = t
+		saveToFile()
 		mu.Unlock()
 		writeJson(w, http.StatusCreated, t)
 	}
@@ -90,6 +114,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		existing.Content = t.Content
 		existing.Done = t.Done
 		todos[id] = existing
+		saveToFile()
 		mu.Unlock()
 
 		writeJson(w, http.StatusOK, existing)
@@ -104,6 +129,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		delete(todos, id)
+		saveToFile()
 		mu.Unlock()
 
 		writeJson(w, http.StatusOK, map[string]string{"message": "deleted"})
@@ -113,9 +139,20 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	loadFromFile()
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/todos", todosHandler)
 	mux.HandleFunc("/todos/", todoHandler)
-	http.ListenAndServe(":3000", mux)
+
+	const port = ":3000"
+	addr := "http://localhost" + port
+
+	log.Printf("Server started on %s", addr)
+	log.Println("Press Ctrl+C to stop the server...")
+
+	err := http.ListenAndServe(port, mux)
+	if err != nil {
+		log.Fatalf("Server failed: %v", err)
+	}
 }
