@@ -139,11 +139,10 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	if err := loadFromFile(); err != nil {
-		log.Fatalf("failed to load todos: %v", err)
+	if err := initDB(); err != nil {
+		log.Fatalf("Failed to Connect DataBase: %v", err)
 	}
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("/todos", todosHandler)
 	mux.HandleFunc("/todos/", todoHandler)
 
@@ -153,8 +152,7 @@ func main() {
 	log.Printf("Server started on %s", addr)
 	log.Println("Press Ctrl+C to stop the server...")
 
-	err := http.ListenAndServe(port, mux)
-	if err != nil {
+	if err := http.ListenAndServe(port, mux); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
