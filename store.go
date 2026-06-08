@@ -30,7 +30,7 @@ func initDB() error {
 }
 
 func getAllTodos(ctx context.Context) ([]Todo, error) {
-	rows, err := db.Query(ctx, "SELECT id, title, conten, done FROM todos")
+	rows, err := db.Query(ctx, "SELECT id, title, content, done FROM todos")
 	if err != nil {
 		return nil, err
 	}
@@ -45,11 +45,9 @@ func getAllTodos(ctx context.Context) ([]Todo, error) {
 		}
 		todoList = append(todoList, t)
 	}
-
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-
 	return todoList, nil
 }
 

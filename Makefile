@@ -1,3 +1,6 @@
+include .env
+export $(shell sed 's/=.*//' .env)
+
 .DEFAULT_GOAL := build
 
 .PHONY: fmt vet build

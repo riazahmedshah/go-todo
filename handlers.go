@@ -8,7 +8,7 @@ import (
 func getAllTodosHandler(w http.ResponseWriter, r *http.Request) {
 	todos, err := getAllTodos(r.Context())
 	if err != nil {
-		writeJson(w, http.StatusInternalServerError, err)
+		writeJson(w, http.StatusInternalServerError, map[string]any{"error": err})
 		return
 	}
 	writeJson(w, http.StatusOK, todos)
