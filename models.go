@@ -1,6 +1,10 @@
 package main
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+)
 
 type Todo struct {
 	ID      string `json:"id"`
@@ -16,3 +20,9 @@ type UpdateTodoInput struct {
 }
 
 var ErrNotFound = errors.New("not found")
+
+func writeJson(w http.ResponseWriter, status int, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(data)
+}

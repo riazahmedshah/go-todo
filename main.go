@@ -11,12 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func writeJson(w http.ResponseWriter, status int, data any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
-}
-
 var (
 	todos = map[string]Todo{}
 	mu    sync.Mutex
@@ -136,8 +130,8 @@ func main() {
 		log.Fatalf("Failed to Connect DataBase: %v", err)
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/todos", todosHandler)
-	mux.HandleFunc("/todos/", todoHandler)
+
+	setupTodoRoutes(mux)
 
 	const port = ":3000"
 	addr := "http://localhost" + port
