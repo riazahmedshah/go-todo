@@ -17,13 +17,6 @@ func writeJson(w http.ResponseWriter, status int, data any) {
 	json.NewEncoder(w).Encode(data)
 }
 
-type Todo struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Done    bool   `json:"done"`
-}
-
 var (
 	todos = map[string]Todo{}
 	mu    sync.Mutex
