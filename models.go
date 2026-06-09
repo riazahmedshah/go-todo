@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Todo struct {
@@ -17,6 +19,23 @@ type UpdateTodoInput struct {
 	Title   *string `json:"title"`
 	Content *string `json:"content"`
 	Done    *bool   `json:"done"`
+}
+
+type User struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Claims struct {
+	UserID string `json:"user_id"`
+	jwt.RegisteredClaims
 }
 
 var ErrNotFound = errors.New("not found")

@@ -2,32 +2,9 @@ package main
 
 import (
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
-
-var db *pgxpool.Pool
-
-func initDB() error {
-	dbURL := os.Getenv("DATABASE_URL")
-
-	pool, err := pgxpool.New(context.Background(), dbURL)
-
-	if err != nil {
-		return err
-	}
-
-	err = pool.Ping(context.Background())
-
-	if err != nil {
-		return err
-	}
-
-	db = pool
-	return nil
-}
 
 func getAllTodos(ctx context.Context) ([]Todo, error) {
 	rows, err := db.Query(ctx, "SELECT id, title, content, done FROM todos")
