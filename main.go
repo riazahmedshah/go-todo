@@ -3,15 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/riazahmedshah/todo/routers"
+	"github.com/riazahmedshah/todo/stores"
 )
 
 func main() {
-	if err := initDB(); err != nil {
+	if err := stores.InitDB(); err != nil {
 		log.Fatalf("Failed to Connect DataBase: %v", err)
 	}
 	mux := http.NewServeMux()
 
-	setupRoutes(mux)
+	routers.SetupRoutes(mux)
 
 	const port = ":3000"
 	addr := "http://localhost" + port

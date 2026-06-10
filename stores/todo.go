@@ -1,22 +1,23 @@
-package main
+package stores
 
 import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/riazahmedshah/todo/models"
 )
 
-func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
+func GetAllTodos(ctx context.Context, userId int64) ([]models.Todo, error) {
 	rows, err := db.Query(ctx, "SELECT id, user_id, title, content, done FROM todos WHERE user_id=$1", userId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var todoList []Todo
+	var todoList []models.Todo
 
 	for rows.Next() {
-		var t Todo
+		var t models.Todo
 		if err := rows.Scan(&t.ID, &t.UserID, &t.Title, &t.Content, &t.Done); err != nil {
 			return nil, err
 		}
@@ -28,7 +29,7 @@ func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
 	return todoList, nil
 }
 
-func createTodo(ctx context.Context, t Todo) error {
+func CreateTodo(ctx context.Context, t models.Todo) error {
 	_, err := db.Exec(
 		ctx,
 		"INSERT INTO todos (user_id, title, content) VALUES ($1, $2, $3)",
@@ -39,8 +40,8 @@ func createTodo(ctx context.Context, t Todo) error {
 	return err
 }
 
-func updateTodo(ctx context.Context, id string, input UpdateTodoInput) error {
-	existing, err := getTodo(ctx, id)
+func UpdateTodo(ctx context.Context, id string, input models.UpdateTodoInput) error {
+	existing, err := GetTodo(ctx, id)
 
 	if err != nil {
 		return err
@@ -67,7 +68,7 @@ func updateTodo(ctx context.Context, id string, input UpdateTodoInput) error {
 	return err
 }
 
-func deleteTodo(ctx context.Context, id string) error {
+func DeleteTodo(ctx context.Context, id string) error {
 	_, err := db.Exec(
 		ctx,
 		"DELETE FROM todos WHERE id=$1",
@@ -77,18 +78,18 @@ func deleteTodo(ctx context.Context, id string) error {
 	return err
 }
 
-func getTodo(ctx context.Context, id string) (Todo, error) {
+func GetTodo(ctx context.Context, id string) (models.Todo, error) {
 	row := db.QueryRow(
 		ctx,
 		"SELECT id, title, content, done FROM todos WHERE id=$1",
 		id,
 	)
-	var t Todo
+	var t models.Todo
 	if err := row.Scan(&t.ID, &t.Title, &t.Content, &t.Done); err != nil {
 		if err == pgx.ErrNoRows {
-			return Todo{}, ErrNotFound
+			return models.Todo{}, models.ErrNotFound
 		}
-		return Todo{}, err
+		return models.Todo{}, err
 	}
 
 	return t, nil

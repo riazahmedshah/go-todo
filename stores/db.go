@@ -1,4 +1,4 @@
-package main
+package stores
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 
 var db *pgxpool.Pool
 
-func initDB() error {
+func InitDB() error {
 	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 
 	if err != nil {

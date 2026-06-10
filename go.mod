@@ -1,4 +1,4 @@
-module todo-app
+module github.com/riazahmedshah/todo
 
 go 1.26.3
 
