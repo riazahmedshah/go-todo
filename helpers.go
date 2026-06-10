@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func generateToken(userId string) (string, error) {
+func generateToken(userId int64) (string, error) {
 	secret := os.Getenv("JWT_SECRET")
 
 	claims := Claims{

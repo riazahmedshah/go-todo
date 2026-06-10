@@ -6,7 +6,8 @@ import (
 )
 
 func getAllTodosHandler(w http.ResponseWriter, r *http.Request) {
-	todos, err := getAllTodos(r.Context())
+	userId := r.Context().Value(UserIDKey).(int64)
+	todos, err := getAllTodos(r.Context(), userId)
 	if err != nil {
 		writeJson(w, http.StatusInternalServerError, map[string]any{"error": err})
 		return
@@ -15,11 +16,14 @@ func getAllTodosHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTodoHandler(w http.ResponseWriter, r *http.Request) {
+	userId := r.Context().Value(UserIDKey).(int64)
 	var t Todo
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		writeJson(w, http.StatusBadRequest, map[string]string{"error": "invalid body"})
 		return
 	}
+
+	t.UserID = userId
 
 	if err := createTodo(r.Context(), t); err != nil {
 		writeJson(w, http.StatusInternalServerError, err)
@@ -28,7 +32,7 @@ func createTodoHandler(w http.ResponseWriter, r *http.Request) {
 	writeJson(w, http.StatusOK, t)
 }
 
-func updateTodohandler(w http.ResponseWriter, r *http.Request) {
+func updateTodoHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	var body UpdateTodoInput
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {

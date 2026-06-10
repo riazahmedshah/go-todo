@@ -32,7 +32,7 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		claims := token.Claims.(*Claims)
-		ctx := context.WithValue(r.Context(), "userId", claims.UserID)
+		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }

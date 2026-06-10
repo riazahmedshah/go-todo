@@ -9,7 +9,8 @@ import (
 )
 
 type Todo struct {
-	ID      string `json:"id"`
+	ID      int64  `json:"id"`
+	UserID  int64  `json:"userId"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Done    bool   `json:"done"`
@@ -22,7 +23,7 @@ type UpdateTodoInput struct {
 }
 
 type User struct {
-	ID       string `json:"id"`
+	ID       int64  `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -34,9 +35,13 @@ type Login struct {
 }
 
 type Claims struct {
-	UserID string `json:"user_id"`
+	UserID int64 `json:"userId"`
 	jwt.RegisteredClaims
 }
+
+type contextKey string
+
+const UserIDKey contextKey = "userID"
 
 var ErrNotFound = errors.New("not found")
 

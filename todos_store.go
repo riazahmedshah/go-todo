@@ -6,8 +6,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func getAllTodos(ctx context.Context) ([]Todo, error) {
-	rows, err := db.Query(ctx, "SELECT id, title, content, done FROM todos")
+func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
+	rows, err := db.Query(ctx, "SELECT id, title, content, done FROM todos WHERE userId=$1", userId)
 	if err != nil {
 		return nil, err
 	}
@@ -31,8 +31,8 @@ func getAllTodos(ctx context.Context) ([]Todo, error) {
 func createTodo(ctx context.Context, t Todo) error {
 	_, err := db.Exec(
 		ctx,
-		"INSERT INTO todos (id, title, content, done) VALUES ($1, $2, $3, $4)",
-		t.ID,
+		"INSERT INTO todos (userId, title, content, done) VALUES ($1, $2, $3, $4)",
+		t.UserID,
 		t.Title,
 		t.Content,
 		t.Done,

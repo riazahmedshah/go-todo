@@ -2,10 +2,15 @@ package main
 
 import "net/http"
 
-func setupTodoRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("GET /todos", getAllTodosHandler)
-	mux.HandleFunc("GET /todos/{id}", getTodoHandler)
-	mux.HandleFunc("POST /todos", createTodoHandler)
-	mux.HandleFunc("PATCH /todos/{id}", updateTodohandler)
-	mux.HandleFunc("DELETE /todos/{id}", deleteTodoHandler)
+func setupRoutes(mux *http.ServeMux) {
+	// TODO Routes
+	mux.HandleFunc("GET /todos", authMiddleware(getAllTodosHandler))
+	mux.HandleFunc("GET /todos/{id}", authMiddleware(getTodoHandler))
+	mux.HandleFunc("POST /todos", authMiddleware(createTodoHandler))
+	mux.HandleFunc("PATCH /todos/{id}", authMiddleware(updateTodoHandler))
+	mux.HandleFunc("DELETE /todos/{id}", authMiddleware(deleteTodoHandler))
+
+	// USER Routes
+	mux.HandleFunc("POST /register", registerHandler)
+	mux.HandleFunc("POST /login", loginHandler)
 }
