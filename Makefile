@@ -11,5 +11,8 @@ fmt:
 vet: fmt
 	go vet ./...
 
-build: vet
+migrate: vet
+	tern migrate --migrations migrations --conn-string $(DATABASE_URL)
+
+build: migrate
 	go build -o main

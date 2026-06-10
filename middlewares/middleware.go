@@ -23,7 +23,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		token, err := jwt.ParseWithClaims(
 			tokenStr,
 			&models.Claims{},
-			func(token *jwt.Token) (interface{}, error) {
+			func(token *jwt.Token) (any, error) {
 				return []byte(os.Getenv("JWT_SECRET")), nil
 			},
 		)
