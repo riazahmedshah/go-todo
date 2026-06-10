@@ -10,7 +10,7 @@ import (
 
 type Todo struct {
 	ID      int64  `json:"id"`
-	UserID  int64  `json:"userId"`
+	UserID  int64  `json:"user_id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Done    bool   `json:"done"`
@@ -35,7 +35,7 @@ type Login struct {
 }
 
 type Claims struct {
-	UserID int64 `json:"userId"`
+	UserID int64 `json:"user_id"`
 	jwt.RegisteredClaims
 }
 

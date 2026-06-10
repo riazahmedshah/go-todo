@@ -56,7 +56,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:  token,
+		Name:  "token",
 		Value: token,
 		Path:  "/",
 	})

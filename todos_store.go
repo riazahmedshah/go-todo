@@ -7,7 +7,7 @@ import (
 )
 
 func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
-	rows, err := db.Query(ctx, "SELECT id, title, content, done FROM todos WHERE userId=$1", userId)
+	rows, err := db.Query(ctx, "SELECT id, user_id, title, content, done FROM todos WHERE user_id=$1", userId)
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
 
 	for rows.Next() {
 		var t Todo
-		if err := rows.Scan(&t.ID, &t.Title, &t.Content, &t.Done); err != nil {
+		if err := rows.Scan(&t.ID, &t.UserID, &t.Title, &t.Content, &t.Done); err != nil {
 			return nil, err
 		}
 		todoList = append(todoList, t)
@@ -31,11 +31,10 @@ func getAllTodos(ctx context.Context, userId int64) ([]Todo, error) {
 func createTodo(ctx context.Context, t Todo) error {
 	_, err := db.Exec(
 		ctx,
-		"INSERT INTO todos (userId, title, content, done) VALUES ($1, $2, $3, $4)",
+		"INSERT INTO todos (user_id, title, content) VALUES ($1, $2, $3)",
 		t.UserID,
 		t.Title,
 		t.Content,
-		t.Done,
 	)
 	return err
 }

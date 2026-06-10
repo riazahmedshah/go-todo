@@ -22,7 +22,6 @@ func createTodoHandler(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, http.StatusBadRequest, map[string]string{"error": "invalid body"})
 		return
 	}
-
 	t.UserID = userId
 
 	if err := createTodo(r.Context(), t); err != nil {

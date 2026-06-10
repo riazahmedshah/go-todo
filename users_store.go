@@ -20,9 +20,9 @@ func createUser(ctx context.Context, u User) error {
 
 func findUserByEmail(ctx context.Context, email string) (User, error) {
 	var u User
-	row := db.QueryRow(ctx, "SELECT id, username, email FROM users WHERE email=$1", email)
+	row := db.QueryRow(ctx, "SELECT id, password FROM users WHERE email=$1", email)
 
-	if err := row.Scan(&u.ID, &u.Username, &u.Email); err != nil {
+	if err := row.Scan(&u.ID, &u.Password); err != nil {
 		if err == pgx.ErrNoRows {
 			return User{}, ErrNotFound
 		}
